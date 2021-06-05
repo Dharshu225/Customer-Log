@@ -11,7 +11,7 @@ import com.dharshiny.application.Repository.LogRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -28,8 +28,8 @@ public class ApplicationController {
         return logs;
     }
 
-    @GetMapping(value="/checkIn/name={cname}")
-    public LogModel checkIn(@PathVariable(value="cname") String cname) {
+    @GetMapping(value="/checkIn")
+    public LogModel checkIn(@RequestParam(value="name") String cname) {
         String type="IN",date,time;
         LocalDate today = LocalDate.now();
         date=today.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
@@ -40,8 +40,8 @@ public class ApplicationController {
         return logRepository.save(log);
     }
     
-    @GetMapping(value="/checkOut/name={cname}")
-    public LogModel checkOut(@PathVariable(value="cname") String cname) {
+    @GetMapping(value="/checkOut")
+    public LogModel checkOut(@RequestParam(value="name") String cname) {
         String type="OUT",date,time;
         LocalDate today = LocalDate.now();
         date=today.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
@@ -52,13 +52,11 @@ public class ApplicationController {
         return logRepository.save(log);
     }
 
-    @GetMapping(value="/getLog/date={year}/{month}/{date}")
-    public List<LogModel> getLogByDate(@PathVariable(value="year") String year,
-        @PathVariable(value="month") String month, @PathVariable(value="date") String date) {
+    @GetMapping(value="/getLog")
+    public List<LogModel> getLogByDate(@RequestParam(value="date") String date) {
         List<LogModel> logs=new ArrayList<>();
-        String ldate=year+"/"+month+"/"+date;
         logRepository.findAll().forEach((log)-> {
-            if((ldate).equals(log.getDate())) {
+            if((date).equals(log.getDate())) {
                 logs.add(log);
             }});
         return logs;
